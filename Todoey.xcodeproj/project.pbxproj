@@ -119,8 +119,8 @@
 			children = (
 				FA8ACF17217E3ACC00B232CF /* AppDelegate.swift */,
 				FA361E99217FA0D300A0D177 /* Modal */,
-				FA361E9C217FA17C00A0D177 /* Contoller */,
 				FA361E9D217FA19100A0D177 /* Views */,
+				FA361E9C217FA17C00A0D177 /* Contoller */,
 				FA4473A421824F190012EC4F /* DataModel */,
 				FA361E9E217FA1BA00A0D177 /* Supporting Files */,
 				FA8ACF23217E3ACD00B232CF /* Info.plist */,
@@ -217,6 +217,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Todoey/Pods-Todoey-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SwipeCellKit/SwipeCellKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
@@ -224,6 +225,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwipeCellKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
