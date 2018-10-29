@@ -8,9 +8,9 @@
 
 import UIKit
 import RealmSwift
-import SwipeCellKit
+import ChameleonFramework
 
-class CategoryViewController: UITableViewController {
+class CategoryViewController: SwipeTableViewController {
     
     let realm = try! Realm()
     
@@ -18,13 +18,14 @@ class CategoryViewController: UITableViewController {
     
     
     override func viewDidLoad() {
-        super.viewDidLoad()
         
-        tableView.rowHeight = 80.0
+        super.viewDidLoad()
         
         loadCategories()
 
     }
+    
+    
     
     
     // MARK - Tableview Datasource Methods
@@ -38,13 +39,20 @@ class CategoryViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! SwipeTableViewCell
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
-        cell.textLabel?.text = categories?[indexPath.row].name ?? "No category added"
+        guard let category = categories?[indexPath.row] else {fatalError("Category does not exist")}
         
-        cell.delegate = self
+        cell.textLabel?.text = category.name
+        
+        guard let categoryColor = UIColor(hexString: category.cellBackgroundColor) else {fatalError("Category colour does not exist")}
+        
+        cell.backgroundColor = categoryColor
+        
+        cell.textLabel?.textColor = ContrastColorOf(categoryColor, returnFlat: true)
         
         return cell
+        
     }
     
     
@@ -73,21 +81,27 @@ class CategoryViewController: UITableViewController {
     //MARK - Add New Categories
 
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        
         var alertTextview = UITextField()
         
         let alert = UIAlertController(title: "New Category", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             
             let category = Category()
+            
             category.name = alertTextview.text!
+            category.cellBackgroundColor = UIColor.randomFlat.hexValue()
             
             self.save(category: category)
+            
             self.tableView.reloadData()
         }
         
         alert.addTextField { (textField) in
+            
             textField.placeholder = "Category name"
             alertTextview = textField
+            
         }
         
         alert.addAction(action)
@@ -121,41 +135,24 @@ class CategoryViewController: UITableViewController {
         
     }
     
-}
-
-// MARK - Swipe Cell Delegete Methods
-
-extension CategoryViewController:SwipeTableViewCellDelegate{
-    
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+    override func updateModel(indexPath:IndexPath){
         
-        guard orientation == .right else { return nil }
-        
-        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+        if let currentCategory = self.categories?[indexPath.row] {
             
-            if let currentCategory = self.categories?[indexPath.row] {
+            do {
                 
-                do {
-                    try self.realm.write {
-                        self.realm.delete(currentCategory)
-                    }
-                } catch  {
-                    print("Error deleting items\(error)")
+                try self.realm.write {
+                    self.realm.delete(currentCategory)
+                    
                 }
+            } catch  {
+                
+                print("Error deleting items\(error)")
+                
             }
-            
         }
-        
-        deleteAction.image = UIImage(named: "delete-icon")
-        
-        return [deleteAction]
     }
-    
-    func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
-        var options = SwipeOptions()
-        options.expansionStyle = .destructive
-        return options
-    }
-    
 }
+
+
 
